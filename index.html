@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODO List - Softpar</title>
+</head>
+<body>
+    <h1>TODO List - Softpar</h1>
+    <form id="form">
+        <input type="text" id="task" placeholder="Digite sua tarefa">
+        <button type="submit">Adicionar</button>
+    </form>
+    <ul id="taskList"></ul>
+
+    <script>
+        const form = document.getElementById('form');
+        const taskList = document.getElementById('taskList');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const task = document.getElementById('task').value;
+            await fetch('http://localhost:3000/tasks', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({title: task})
+            });
+            loadTasks();
+        });
+
+        async function loadTasks() {
+            const res = await fetch('http://localhost:3000/tasks');
+            const tasks = await res.json();
+            taskList.innerHTML = '';
+            tasks.forEach((task, index) => {
+                const li = document.createElement('li');
+                li.innerText = task.title;
+                taskList.appendChild(li);
+            });
+        }
+
+        loadTasks();
+    </script>
+</body>
+</html>
